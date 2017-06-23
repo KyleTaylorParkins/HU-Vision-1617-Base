@@ -51,7 +51,6 @@ int kernel2[3 * 3] = {
 
 
 IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &image) const {
-	IntensityImage* IM = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
 	int offset = 0; // offset voor randen
 	int kernelWidth = 3; // breedte van de kernel
 	int blockSize = 3; 
@@ -59,6 +58,9 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
 	int pixSum = 0; // som van pixelwaarden
 	int pixVal = 0;
 	
+	BaseTimer timer;
+	timer.start();
+	IntensityImage* IM = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
 	// loop door de image heen
 	for (int x = offset; x < (image.getWidth() - offset); x++) {
 		for (int y = offset; y < (image.getHeight() - offset); y++) {
@@ -91,6 +93,11 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
 			IM->setPixel(x + imageWidth * y, pixSum);
 		}
 	}
+	timer.stop();
+	std::ofstream myfile;
+	myfile.open("C:\\Users\\Kaalus\\timer.txt", std::ofstream::app);
+	myfile << "Student: [" << timer.elapsedSeconds() << ";" << timer.elapsedMilliSeconds() << ";" << timer.elapsedMicroSeconds() << "]\n";
+	myfile.close();
 	return IM;
 }
 

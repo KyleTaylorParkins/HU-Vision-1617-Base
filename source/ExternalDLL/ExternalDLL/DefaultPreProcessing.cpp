@@ -10,6 +10,8 @@
 #include "ImageFactory.h"
 #include "HereBeDragons.h"
 
+#include "basetimer.h"
+
 IntensityImage * DefaultPreProcessing::stepToIntensityImage(const RGBImage &src) const {
 	GrayscaleAlgorithm grayScaleAlgorithm;
 	IntensityImage * image = ImageFactory::newIntensityImage();
@@ -32,6 +34,9 @@ IntensityImage * DefaultPreProcessing::stepScaleImage(const IntensityImage &src)
 }
 
 IntensityImage * DefaultPreProcessing::stepEdgeDetection(const IntensityImage &src) const {
+	BaseTimer timer;
+	timer.start();
+
 	cv::Mat OverHillOverDale;
 	HereBeDragons::HerLoveForWhoseDearLoveIRiseAndFall(src, OverHillOverDale);
 	//cv::medianBlur(*image, *image, 3);
@@ -41,6 +46,12 @@ IntensityImage * DefaultPreProcessing::stepEdgeDetection(const IntensityImage &s
 	filter2D(OverHillOverDale, OverParkOverPale, CV_8U, ThoroughBushThoroughBrier, cv::Point(-1, -1), 0, cv::BORDER_DEFAULT);
 	IntensityImage * ThoroughFloodThoroughFire = ImageFactory::newIntensityImage();
 	HereBeDragons::NoWantOfConscienceHoldItThatICall(OverParkOverPale, *ThoroughFloodThoroughFire);
+
+	timer.stop();
+	std::ofstream myfile;
+	myfile.open("C:\\Users\\Kaalus\\timer.txt", std::ofstream::app);
+	myfile << "Default: [" << timer.elapsedSeconds() << ";" << timer.elapsedMilliSeconds() << ";" << timer.elapsedMicroSeconds() << "]\n";
+	myfile.close();
 	return ThoroughFloodThoroughFire;
 }
 
